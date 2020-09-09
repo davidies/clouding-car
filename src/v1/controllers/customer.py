@@ -1,7 +1,7 @@
-from flask import abort
+from flask import abort, request
 from flask_restplus import fields, Namespace, Resource
 from http import HTTPStatus
-from typing import List
+from typing import Dict, List
 from .. import API_V1
 from ..models import Customer
 from ..repos import CUSTOMERS
@@ -22,7 +22,7 @@ class CustomerList(Resource):
     @CUSTOMER_NS.marshal_with(Customer.__model__,
                               code=HTTPStatus.CREATED,
                               description=SUCCESSFULLY_ADDED)
-    def post(self) -> (Customer, HTTPStatus):
+    def post(self) -> (Customer, HTTPStatus, Dict[str, str]):
         if CUSTOMERS:
             identifier = max(map(lambda c: c.id, CUSTOMERS)) + 1
         else:
@@ -30,7 +30,8 @@ class CustomerList(Resource):
         fullname = API_V1.payload['fullname']
         customer = Customer(identifier, fullname)
         CUSTOMERS.append(customer)
-        return customer, HTTPStatus.CREATED
+        headers = {'Location': f'{request.base_url}{identifier}'}
+        return customer, HTTPStatus.CREATED, headers
 
 
 @CUSTOMER_NS.route('/<int:identifier>')
