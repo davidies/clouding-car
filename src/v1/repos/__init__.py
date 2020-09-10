@@ -31,9 +31,9 @@ CARS = [
 ]
 
 CUSTOMERS = [
-    Customer(1, 'Moshe G Toney'),
-    Customer(2, 'Kristine R Johnson'),
-    Customer(3, 'Edmond H Castle'),
-    Customer(4, 'Natasha H Turner'),
-    Customer(5, 'Shannon R Mullins')
+    Customer(1, 'Moshe G Toney', [CARS[6]]),
+    Customer(2, 'Kristine R Johnson', [CARS[0], CARS[2]]),
+    Customer(3, 'Edmond H Castle', [CARS[1]]),
+    Customer(4, 'Natasha H Turner', [CARS[3], CARS[8]]),
+    Customer(5, 'Shannon R Mullins', CARS[5])
 ]
