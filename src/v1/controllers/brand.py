@@ -1,4 +1,4 @@
-from flask import abort, request
+from flask import request
 from flask_restplus import fields, Namespace, Resource
 from http import HTTPStatus
 from typing import Dict, List
@@ -41,4 +41,4 @@ class BrandSingle(Resource):
         for brand in BRANDS:
             if brand.id == identifier:
                 return brand, HTTPStatus.OK
-        abort(HTTPStatus.NOT_FOUND, f'Brand not found with id: {identifier}')
+        BRAND_NS.abort(HTTPStatus.NOT_FOUND, f'Brand not found with id: {identifier}')

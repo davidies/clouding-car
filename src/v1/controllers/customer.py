@@ -1,4 +1,4 @@
-from flask import abort, request
+from flask import request
 from flask_restplus import fields, Namespace, Resource
 from http import HTTPStatus
 from typing import Dict, List
@@ -42,7 +42,7 @@ class CustomerSingle(Resource):
         for customer in CUSTOMERS:
             if customer.id == identifier:
                 return customer, HTTPStatus.OK
-        abort(HTTPStatus.NOT_FOUND, f'Customer not found with id: {identifier}')
+        CUSTOMER_NS.abort(HTTPStatus.NOT_FOUND, f'Customer not found with id: {identifier}')
 
     @CUSTOMER_NS.expect(Customer.__model__, validate=True)
     @CUSTOMER_NS.response(HTTPStatus.NO_CONTENT, SUCCESSFULLY_UPDATED)
@@ -52,7 +52,7 @@ class CustomerSingle(Resource):
             if customer.id == identifier:
                 customer.fullname = API_V1.payload['fullname']
                 return None, HTTPStatus.NO_CONTENT
-        abort(HTTPStatus.NOT_FOUND, f'Customer not found with id: {identifier}')
+        CUSTOMER_NS.abort(HTTPStatus.NOT_FOUND, f'Customer not found with id: {identifier}')
 
     @CUSTOMER_NS.response(HTTPStatus.NO_CONTENT, SUCCESSFULLY_DELETED)
     def delete(self, identifier: int) -> (None, HTTPStatus):

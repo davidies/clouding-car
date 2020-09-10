@@ -1,4 +1,4 @@
-from flask import abort, request
+from flask import request
 from flask_restplus import Namespace, Resource
 from http import HTTPStatus
 from typing import Dict, List
@@ -43,7 +43,7 @@ class CarSingle(Resource):
         for car in CARS:
             if car.id == identifier:
                 return car, HTTPStatus.OK
-        abort(HTTPStatus.NOT_FOUND, NOT_FOUND)
+        CAR_NS.abort(HTTPStatus.NOT_FOUND, NOT_FOUND)
     
     @CAR_NS.response(HTTPStatus.NO_CONTENT, SUCCESSFULLY_DELETED)
     def delete(self, identifier: int) -> (None, HTTPStatus):
