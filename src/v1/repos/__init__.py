@@ -1,4 +1,7 @@
-from ..models import Brand, Car, Customer
+from typing import List
+from ..models import Brand, Car, Customer, User
+
+USER_TOKENS = []
 
 BRANDS = [
     Brand(1, "Acura"),
@@ -36,4 +39,10 @@ CUSTOMERS = [
     Customer(3, 'Edmond H Castle', [CARS[1]]),
     Customer(4, 'Natasha H Turner', [CARS[3], CARS[8]]),
     Customer(5, 'Shannon R Mullins', CARS[5])
+]
+
+USERS = [
+    User(1, 'donadoe', 'secretpassword', 'admin'),
+    User(2, 'triticky', 'iamthebest', 'salesperson'),
+    User(3, 'meberave', 'crazy4cars', 'mechanic')
 ]

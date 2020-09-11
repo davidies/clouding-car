@@ -5,7 +5,9 @@ from typing import Dict, List
 from .. import API_V1
 from ..models import Brand
 from ..repos import BRANDS
-from ..shared.constants import NOT_FOUND, SUCCESSFULLY_ADDED
+from ..shared.constants import (AUTHORIZATION_HEADER_DESC, NOT_FOUND,
+                                SUCCESSFULLY_ADDED)
+from ..shared.utils import token_required
 
 
 BRAND_NS = Namespace('brands')
@@ -18,9 +20,11 @@ class BrandList(Resource):
         return BRANDS, HTTPStatus.OK
 
     @BRAND_NS.expect(Brand.__model__, validate=True)
+    @BRAND_NS.header('Authorization', AUTHORIZATION_HEADER_DESC)
     @BRAND_NS.marshal_with(Brand.__model__,
                            code=HTTPStatus.CREATED,
                            description=SUCCESSFULLY_ADDED)
+    @token_required(roles='admin')
     def post(self) -> (Brand, HTTPStatus, Dict[str, str]):
         if BRANDS:
             identifier = max(map(lambda b: b.id, BRANDS)) + 1
@@ -41,4 +45,5 @@ class BrandSingle(Resource):
         for brand in BRANDS:
             if brand.id == identifier:
                 return brand, HTTPStatus.OK
-        BRAND_NS.abort(HTTPStatus.NOT_FOUND, f'Brand not found with id: {identifier}')
+        BRAND_NS.abort(HTTPStatus.NOT_FOUND,
+                       f'Brand not found with id: {identifier}')
