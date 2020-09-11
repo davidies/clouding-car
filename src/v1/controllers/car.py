@@ -5,7 +5,9 @@ from typing import Dict, List
 from .. import API_V1
 from ..models import Brand, Car
 from ..repos import BRANDS, CARS
-from ..shared.constants import NOT_FOUND, SUCCESSFULLY_ADDED, SUCCESSFULLY_DELETED
+from ..shared.constants import (AUTHORIZATION_HEADER_DESC, NOT_FOUND,
+                                SUCCESSFULLY_ADDED, SUCCESSFULLY_DELETED)
+from ..shared.utils import token_required
 
 
 CAR_NS = Namespace('cars')
@@ -18,9 +20,11 @@ class CarList(Resource):
         return CARS, HTTPStatus.OK
 
     @CAR_NS.expect(Car.__model__, validate=True)
+    @CAR_NS.header('Authorization', AUTHORIZATION_HEADER_DESC)
     @CAR_NS.marshal_with(Car.__model__,
                          code=HTTPStatus.CREATED,
                          description=SUCCESSFULLY_ADDED)
+    @token_required(roles='admin')
     def post(self) -> (Car, HTTPStatus, Dict[str, str]):
         if CARS:
             identifier = max(map(lambda c: c.id, CARS)) + 1
@@ -44,8 +48,10 @@ class CarSingle(Resource):
             if car.id == identifier:
                 return car, HTTPStatus.OK
         CAR_NS.abort(HTTPStatus.NOT_FOUND, NOT_FOUND)
-    
+
+    @CAR_NS.header('Authorization', AUTHORIZATION_HEADER_DESC)
     @CAR_NS.response(HTTPStatus.NO_CONTENT, SUCCESSFULLY_DELETED)
+    @token_required(roles='admin')
     def delete(self, identifier: int) -> (None, HTTPStatus):
         for car in CARS:
             if car.id == identifier:
