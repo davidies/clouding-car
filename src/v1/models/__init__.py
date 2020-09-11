@@ -3,6 +3,18 @@ from typing import List, Optional
 from .. import API_V1
 
 
+class AuthToken:
+    __model__ = API_V1.model('AuthToken', {
+        'access_token': fields.String(readonly=True, description='The access token, contains the claims.'),
+        'refresh_token': fields.String(readonly=True,
+                                       description='The refresh token. Does not contain any information')
+    })
+
+    def __init__(self, access_token: str, refresh_token: str, /) -> None:
+        self.access_token = access_token
+        self.refresh_token = refresh_token
+
+
 class Brand:
     __model__ = API_V1.model('Brand', {
         'id': fields.Integer(readonly=True, min=1, description='The brand id'),
@@ -45,3 +57,24 @@ class Customer:
         self.id = identifier
         self.fullname = fullname
         self.cars = cars or []
+
+
+class User:
+    __model_signin__ = API_V1.model('User sign in', {
+        'username': fields.String(required=True, description='The username'),
+        'password': fields.String(required=True, description='The user password')
+    })
+
+    def __init__(self, identifier: int, username: str, password: str,
+                 role: Optional[str] = None, /) -> None:
+        from werkzeug.security import generate_password_hash
+        self.id = identifier
+        self.username = username
+        self.password = generate_password_hash(password)
+        self.role = role
+
+
+class UserToken:
+    def __init__(self, user_id: int, auth_token: AuthToken, /) -> None:
+        self.user_id = user_id
+        self.auth_token = auth_token
